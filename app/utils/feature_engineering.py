@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 from typing import Dict, List, Optional, Tuple
 import ta
 from scipy import stats
@@ -19,6 +20,11 @@ class FeatureEngineer:
             'statistical_features': [],
             'market_features': []
         }
+        
+        # Essential cryptocurrencies for faster processing
+        self.essential_cryptos = [
+            'Bitcoin', 'Ethereum', 'BNB', 'XRP', 'Cardano'
+        ]
     
     def create_price_features(self, data: pd.DataFrame) -> pd.DataFrame:
         """Create price-based features"""
@@ -313,6 +319,20 @@ class FeatureEngineer:
         df = data.copy()
         
         print("🔄 Starting feature engineering pipeline...")
+        
+        # Filter to essential cryptocurrencies in production for faster startup
+        available_cryptos = df['crypto_name'].unique()
+        if os.getenv("ENVIRONMENT") == "production":
+            # Use only essential cryptos in production for faster startup
+            cryptos_to_process = [crypto for crypto in self.essential_cryptos if crypto in available_cryptos]
+            if cryptos_to_process:
+                df = df[df['crypto_name'].isin(cryptos_to_process)]
+                print(f"📊 Processing {len(cryptos_to_process)} essential cryptocurrencies: {', '.join(cryptos_to_process)}")
+            else:
+                print("⚠️ No essential cryptocurrencies found, processing first 5...")
+                df = df[df['crypto_name'].isin(available_cryptos[:5])]
+        else:
+            print(f"📊 Development mode: Processing all {len(available_cryptos)} cryptocurrencies")
         
         # Group by crypto to ensure features are calculated per cryptocurrency
         crypto_dfs = []

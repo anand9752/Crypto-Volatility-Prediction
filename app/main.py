@@ -60,11 +60,19 @@ feature_engineer = FeatureEngineer()
 async def startup_event():
     """Initialize models and load data on startup"""
     try:
-        # Load the trained model
-        model_manager.load_model()
-        print("✅ Models loaded successfully")
+        # In production, try to load pre-trained model, but don't fail if it doesn't exist
+        if os.getenv("ENVIRONMENT") == "production":
+            try:
+                model_manager.load_model()
+                print("✅ Pre-trained model loaded successfully")
+            except Exception as e:
+                print(f"⚠️ Warning: Could not load pre-trained model - {e}")
+                print("💡 The API will work without pre-trained model, but training may be needed")
+        else:
+            print("🚀 Development mode: Models will be loaded on demand")
     except Exception as e:
-        print(f"⚠️ Warning: Could not load model - {e}")
+        print(f"⚠️ Startup warning: {e}")
+        # Don't fail startup, just log the warning
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
@@ -443,11 +451,18 @@ async def download_report():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now(),
-        "model_loaded": model_manager.is_model_loaded()
-    }
+    try:
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(),
+            "model_loaded": model_manager.is_model_loaded() if hasattr(model_manager, 'is_model_loaded') else False
+        }
+    except Exception:
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now(),
+            "model_loaded": False
+        }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

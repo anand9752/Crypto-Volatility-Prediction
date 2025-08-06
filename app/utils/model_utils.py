@@ -30,11 +30,19 @@ class ModelManager:
         self.processed_data = None
         self.model_loaded = False
         
-        # Load data on initialization
-        self.load_data()
+        # Only load data in production if models exist, otherwise load lazily
+        if os.getenv("ENVIRONMENT") == "production" and os.path.exists(self.settings.MODEL_FILE):
+            try:
+                self.load_model()
+            except Exception as e:
+                print(f"⚠️ Warning: Could not load model in production - {e}")
+        # For development, load data lazily when needed
     
     def load_data(self):
-        """Load and prepare the dataset"""
+        """Load and prepare the dataset - called lazily when needed"""
+        if self.data is not None:
+            return  # Already loaded
+            
         try:
             print("📊 Loading cryptocurrency dataset...")
             
@@ -64,6 +72,10 @@ class ModelManager:
     
     def train_model(self, retrain: bool = False) -> Dict[str, Any]:
         """Train the volatility prediction model"""
+        # Load data if not already loaded
+        if self.processed_data is None:
+            self.load_data()
+            
         if self.processed_data is None:
             raise ValueError("No data available for training")
         
