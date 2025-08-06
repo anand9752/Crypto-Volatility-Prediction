@@ -16,7 +16,6 @@ sys.path.insert(0, str(project_root))
 def run_api_server():
     """Run the FastAPI server"""
     import uvicorn
-    from app.main import app
     
     print("🚀 Starting Cryptocurrency Volatility Prediction API...")
     
@@ -31,13 +30,24 @@ def run_api_server():
         print("📊 API Documentation available at: http://localhost:8000/docs")
         print("🌐 Web Interface available at: http://localhost:8000")
     
-    uvicorn.run(
-        app,
-        host=host,
-        port=port,
-        reload=not is_production,
-        log_level="info" if is_production else "debug"
-    )
+    if is_production:
+        # In production, use the app object directly (no reload)
+        from app.main import app
+        uvicorn.run(
+            app,
+            host=host,
+            port=port,
+            log_level="info"
+        )
+    else:
+        # In development, use import string for reload functionality
+        uvicorn.run(
+            "app.main:app",
+            host=host,
+            port=port,
+            reload=True,
+            log_level="debug"
+        )
 
 def train_model():
     """Train the volatility prediction model"""
