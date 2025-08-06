@@ -10,7 +10,7 @@ A comprehensive machine learning system for predicting cryptocurrency market vol
 - **Real-time Predictions**: API-based volatility forecasting
 - **Interactive Web Interface**: User-friendly dashboard for analysis
 - **Comprehensive Analytics**: Technical indicators, risk metrics, and market insights
-- **Multi-cryptocurrency Support**: Analysis for 50+ cryptocurrencies
+- **Multi-cryptocurrency Support**: Analysis for 5 cryptocurrencies
 - **Risk Management Tools**: Volatility-based trading recommendations
 
 ## 📊 Dataset
@@ -20,7 +20,7 @@ The project uses historical cryptocurrency data including:
 - **Volume Data**: Trading volume and market activity
 - **Market Capitalization**: Market cap trends
 - **Time Series**: Daily data from 2013 to 2022
-- **Coverage**: 50+ major cryptocurrencies
+- **Coverage**: 5 major cryptocurrencies
 
 ## 🏗️ Architecture
 
