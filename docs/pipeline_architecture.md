@@ -1,32 +1,32 @@
-# Optimized Pipeline Architecture: Crypto Volatility Prediction Dashboard v3.0.0
+# Pipeline Architecture: Cryptocurrency Volatility Prediction System
 
 ## Overview
 
-This document details the **optimized pipeline architecture** for the ultra-fast Cryptocurrency Volatility Prediction Dashboard. The architecture prioritizes **performance optimization** through pre-processed data storage, in-memory model caching, and zero-overhead prediction pipelines achieving <50ms response times.
+This document outlines the comprehensive pipeline architecture for the Cryptocurrency Volatility Prediction System. The architecture follows a modular, scalable design that supports both batch processing and real-time prediction capabilities while maintaining high performance and reliability.
 
 ## Table of Contents
 
-1. [Optimized System Architecture](#1-optimized-system-architecture)
-2. [Pre-Processing Pipeline](#2-pre-processing-pipeline)
+1. [System Architecture Overview](#1-system-architecture-overview)
+2. [Data Pipeline](#2-data-pipeline)
 3. [Feature Engineering Pipeline](#3-feature-engineering-pipeline)
-4. [Model Loading & Caching](#4-model-loading--caching)
-5. [Real-Time Prediction Pipeline](#5-real-time-prediction-pipeline)
-6. [Live Data Integration](#6-live-data-integration)
-7. [Performance Monitoring](#7-performance-monitoring)
-8. [Optimization Strategies](#8-optimization-strategies)
-9. [Deployment Architecture](#9-deployment-architecture)
-10. [Future Scalability](#10-future-scalability)
+4. [Model Training Pipeline](#4-model-training-pipeline)
+5. [Prediction Pipeline](#5-prediction-pipeline)
+6. [API Service Pipeline](#6-api-service-pipeline)
+7. [Monitoring and Logging](#7-monitoring-and-logging)
+8. [Deployment Pipeline](#8-deployment-pipeline)
+9. [Performance Optimization](#9-performance-optimization)
+10. [Future Enhancements](#10-future-enhancements)
 
-## 1. Optimized System Architecture
+## 1. System Architecture Overview
 
-### 1.1 High-Level Architecture (v3.0.0)
+### 1.1 High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Live Data Sources                            │
+│                    External Data Sources                        │
 ├─────────────────────────────────────────────────────────────────┤
-│  • CoinLore API (Real-time)     • Pre-processed Historical Data │
-│  • Auto-refresh (60s)           • 13,715 Records Cached         │
+│  • Cryptocurrency Exchanges    • Market Data APIs              │
+│  • Historical Data Files       • Real-time Feeds               │
 └─────────────────┬───────────────────────────────────────────────┘
                   │
                   ▼

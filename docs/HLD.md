@@ -1,73 +1,61 @@
-# High Level Design (HLD) - Optimized Crypto Volatility Prediction Dashboard v3.0.0
+# High Level Design (HLD) - Cryptocurrency Volatility Prediction System
 
 ## 1. System Overview
 
 ### 1.1 Purpose
-The **Optimized Cryptocurrency Volatility Prediction Dashboard** is a high-performance, real-time forecasting system built with FastAPI and advanced machine learning. Designed for **ultra-fast predictions** (<50ms response time) using pre-processed data architecture, targeting crypto traders, analysts, and financial professionals.
+The Cryptocurrency Volatility Prediction System is designed to provide accurate, real-time volatility forecasting for cryptocurrency markets using advanced machine learning techniques. The system serves traders, financial institutions, and investors who need reliable volatility predictions for risk management and trading decisions.
 
-### 1.2 Scope & Capabilities
-- **5 Major Cryptocurrencies**: Bitcoin, Ethereum, Litecoin, XRP, Cardano
-- **Real-Time Predictions**: Sub-second volatility forecasting with 85%+ accuracy
-- **Live Market Data**: Integration with CoinLore API for current prices
-- **Responsive Web Interface**: Mobile-first design with interactive charts
-- **Pre-Processed Architecture**: Zero processing overhead during predictions
-- **4-Tier Risk Assessment**: Comprehensive trading recommendations
+### 1.2 Scope
+- Volatility prediction for 50+ major cryptocurrencies
+- Historical data analysis and pattern recognition
+- Real-time API for predictions and market insights
+- Web-based dashboard for interactive analysis
+- Risk assessment and portfolio optimization tools
 
 ### 1.3 Key Stakeholders
-- **Crypto Traders**: Individual and professional cryptocurrency traders
-- **Portfolio Managers**: Risk assessment and position sizing
-- **Financial Analysts**: Market volatility research and analysis
-- **Developers**: API integration and system extension
+- **Traders**: Individual and institutional cryptocurrency traders
+- **Financial Institutions**: Banks, hedge funds, investment firms
+- **Risk Managers**: Portfolio and risk management professionals
+- **Developers**: System integrators and API consumers
 
-## 2. Optimized System Architecture v3.0.0
+## 2. System Architecture
 
 ### 2.1 High-Level Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Web Dashboard  │    │   Live Prices   │    │  Mobile Users   │
-│  (Responsive)   │    │   (CoinLore)    │    │   (Optimized)   │
+│   Web Interface │    │   Mobile App    │    │   External APIs │
+│    (React/Vue)  │    │     (Future)    │    │   (Future)      │
 └─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
           │                      │                      │
           └──────────────────────┼──────────────────────┘
                                  │
-              ┌─────────────────▼─────────────────┐
-              │     ultra_fast_main.py            │
-              │   (Optimized FastAPI App)         │
-              │   • Pre-loaded ML Model           │
-              │   • Cached DOM Elements           │
-              │   • Live Price Integration        │
-              └─────────────────┬─────────────────┘
-                                │
-        ┌───────────────────────┼───────────────────────┐
-        │                       │                       │
-┌───────▼───────┐     ┌─────────▼─────────┐     ┌───────▼───────┐
-│ ML Prediction │     │  Live Price API   │     │  Web Interface│
-│ Engine (Fast) │     │  (CoinLore.net)   │     │  (Responsive) │
-│               │     │                   │     │               │
-│ • 102 Features│     │ • Real-time Data  │     │ • 7-Tab UI    │
-│ • Pre-loaded  │     │ • Auto-refresh    │     │ • Chart.js    │
-│ • <50ms       │     │ • Error Handling  │     │ • Mobile-First│
-└───────┬───────┘     └─────────┬─────────┘     └───────┬───────┘
-        │                       │                       │
-        └───────────────────────┼───────────────────────┘
-                                │
-              ┌─────────────────▼─────────────────┐
-              │       Pre-Processed Data          │
-              │     (In-Memory Storage)           │
-              │   • 13,715 Training Records       │
-              │   • volatility_model.joblib       │
-              │   • Zero Processing Overhead      │
-              └───────────────────────────────────┘
+                    ┌─────────────▼─────────────┐
+                    │      FastAPI Gateway      │
+                    │   (API Layer/Router)      │
+                    └─────────────┬─────────────┘
+                                  │
+          ┌───────────────────────┼───────────────────────┐
+          │                       │                       │
+┌─────────▼─────────┐   ┌─────────▼─────────┐   ┌─────────▼─────────┐
+│  Prediction       │   │  Data Processing  │   │  Model Management │
+│  Service          │   │  Service          │   │  Service          │
+└─────────┬─────────┘   └─────────┬─────────┘   └─────────┬─────────┘
+          │                       │                       │
+          └───────────────────────┼───────────────────────┘
+                                  │
+                    ┌─────────────▼─────────────┐
+                    │      Data Layer           │
+                    │  (SQLite/PostgreSQL)      │
+                    └───────────────────────────┘
 ```
 
-### 2.2 Optimized Component Architecture
+### 2.2 Component Architecture
 
-#### 2.2.1 Presentation Layer (Ultra-Responsive)
-- **Single-Page Dashboard**: 7-tab interface with smooth transitions
-- **Chart.js Integration**: Interactive price and volatility visualizations
-- **Mobile-First Design**: Responsive grid layouts with CSS clamp() functions
-- **Real-Time Updates**: Live price feeds with auto-refresh capabilities
+#### 2.2.1 Presentation Layer
+- **Web Interface**: Interactive dashboard built with HTML5, CSS3, JavaScript
+- **API Documentation**: Swagger/OpenAPI documentation
+- **Mobile Support**: Responsive design for mobile devices
 
 #### 2.2.2 API Layer
 - **FastAPI Framework**: High-performance async API framework

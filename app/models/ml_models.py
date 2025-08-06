@@ -26,34 +26,34 @@ class VolatilityPredictor:
         self.model_metrics = {}
         self.is_trained = False
         
-        # Model configurations - OPTIMIZED for faster training
+        # Model configurations
         self.model_configs = {
             'random_forest': {
                 'model': RandomForestRegressor(
-                    n_estimators=50,  # Reduced from 100
-                    max_depth=8,      # Reduced from 10
+                    n_estimators=100,
+                    max_depth=10,
                     min_samples_split=5,
                     min_samples_leaf=2,
                     random_state=42,
-                    n_jobs=1  # Changed from -1 to 1 to avoid joblib issues on Windows
+                    n_jobs=-1
                 ),
                 'params': {
-                    'n_estimators': [30, 50],        # Reduced grid search
-                    'max_depth': [6, 8],             # Reduced grid search
-                    'min_samples_split': [3, 5]      # Reduced grid search
+                    'n_estimators': [50, 100, 200],
+                    'max_depth': [8, 10, 12],
+                    'min_samples_split': [3, 5, 7]
                 }
             },
             'gradient_boosting': {
                 'model': GradientBoostingRegressor(
-                    n_estimators=50,    # Reduced from 100
+                    n_estimators=100,
                     learning_rate=0.1,
-                    max_depth=4,        # Reduced from 6
+                    max_depth=6,
                     random_state=42
                 ),
                 'params': {
-                    'n_estimators': [30, 50],        # Reduced grid search
-                    'learning_rate': [0.1],          # Fixed value for speed
-                    'max_depth': [4, 6]              # Reduced grid search
+                    'n_estimators': [50, 100, 150],
+                    'learning_rate': [0.05, 0.1, 0.15],
+                    'max_depth': [4, 6, 8]
                 }
             }
         }
@@ -163,14 +163,14 @@ class VolatilityPredictor:
         for model_name, config in self.model_configs.items():
             print(f"Training {model_name}...")
             
-            # Grid search with time series cross-validation - OPTIMIZED
-            tscv = TimeSeriesSplit(n_splits=2)  # Reduced from 3 to 2 for speed
+            # Grid search with time series cross-validation
+            tscv = TimeSeriesSplit(n_splits=3)
             grid_search = GridSearchCV(
                 config['model'],
                 config['params'],
                 cv=tscv,
                 scoring='neg_mean_squared_error',
-                n_jobs=1  # Changed from -1 to 1 to avoid joblib issues on Windows
+                n_jobs=-1
             )
             
             grid_search.fit(X_train_scaled, y_train)
@@ -200,43 +200,15 @@ class VolatilityPredictor:
         if not self.is_trained:
             raise ValueError("Model must be trained before making predictions")
         
-        # Check if data already has engineered features (from FeatureEngineer)
-        feature_cols = [col for col in data.columns if col not in 
-                       ['date', 'crypto_name', 'timestamp', 'open', 'high', 'low', 'close', 'volume', 'marketCap']]
+        # Prepare features
+        features_df = self.prepare_features(data)
+        features_df = features_df.dropna()
         
-        if len(feature_cols) > 50:  # Data already has engineered features
-            print(f"Using pre-engineered features: {len(feature_cols)} features available")
-            
-            # Use only the features that exist in both the data and the model's expected features
-            available_features = [f for f in self.feature_names if f in data.columns]
-            
-            if len(available_features) < 10:  # Need at least some features
-                print(f"Warning: Only {len(available_features)} features match. Using available features.")
-                # Use the first N features that are available
-                available_features = feature_cols[:min(len(self.feature_names), len(feature_cols))]
-            
-            # Get latest features
-            latest_features = data[available_features].iloc[-1:].values
-            
-            # Pad or truncate to match expected feature count
-            if latest_features.shape[1] < len(self.feature_names):
-                # Pad with zeros
-                padding = np.zeros((1, len(self.feature_names) - latest_features.shape[1]))
-                latest_features = np.hstack([latest_features, padding])
-            elif latest_features.shape[1] > len(self.feature_names):
-                # Truncate
-                latest_features = latest_features[:, :len(self.feature_names)]
-                
-        else:
-            # Fall back to creating features using the old method
-            print("Creating features using VolatilityPredictor's prepare_features method")
-            features_df = self.prepare_features(data)
-            features_df = features_df.dropna()
-            
-            if len(features_df) == 0:
-                raise ValueError("No valid data for prediction")
-            
-            latest_features = features_df[self.feature_names].iloc[-1:].values
+        if len(features_df) == 0:
+            raise ValueError("No valid data for prediction")
+        
+        # Get latest features
+        latest_features = features_df[self.feature_names].iloc[-1:].values
         
         # Scale features
         scaler = list(self.scalers.values())[0]  # Use default scaler

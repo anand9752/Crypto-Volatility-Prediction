@@ -19,15 +19,24 @@ def run_api_server():
     from app.main import app
     
     print("🚀 Starting Cryptocurrency Volatility Prediction API...")
-    print("📊 API Documentation available at: http://localhost:8000/docs")
-    print("🌐 Web Interface available at: http://localhost:8000")
+    
+    # Get port from environment (for Render deployment)
+    port = int(os.getenv("PORT", 8000))
+    host = os.getenv("HOST", "0.0.0.0")
+    
+    # Determine if we're in production
+    is_production = os.getenv("ENVIRONMENT") == "production"
+    
+    if not is_production:
+        print("📊 API Documentation available at: http://localhost:8000/docs")
+        print("🌐 Web Interface available at: http://localhost:8000")
     
     uvicorn.run(
         app,
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
+        host=host,
+        port=port,
+        reload=not is_production,
+        log_level="info" if is_production else "debug"
     )
 
 def train_model():

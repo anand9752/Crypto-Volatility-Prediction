@@ -298,22 +298,21 @@ class FeatureEngineer:
                                    config: Optional[Dict] = None) -> pd.DataFrame:
         """Complete feature engineering pipeline"""
         if config is None:
-            # 🚀 OPTIMIZED CONFIG: Reduce features for faster processing
             config = {
                 'price_features': True,
                 'moving_averages': True,
                 'technical_indicators': True,
-                'volume_features': False,  # Skip volume features for speed
+                'volume_features': True,
                 'volatility_features': True,
-                'statistical_features': False,  # Skip statistical features for speed
-                'market_features': False,  # Skip market features for speed
-                'lag_features': False,  # Skip lag features for speed
-                'interaction_features': False  # Skip interaction features for speed
+                'statistical_features': True,
+                'market_features': True,
+                'lag_features': True,
+                'interaction_features': True
             }
         
         df = data.copy()
         
-        print("🔄 Starting optimized feature engineering pipeline...")
+        print("🔄 Starting feature engineering pipeline...")
         
         # Group by crypto to ensure features are calculated per cryptocurrency
         crypto_dfs = []
@@ -321,7 +320,7 @@ class FeatureEngineer:
         for crypto_name in df['crypto_name'].unique():
             crypto_df = df[df['crypto_name'] == crypto_name].copy().sort_values('date')
             
-            print(f"   ⚡ Processing {crypto_name}...")
+            print(f"   Processing {crypto_name}...")
             
             if config.get('price_features', True):
                 crypto_df = self.create_price_features(crypto_df)
@@ -332,23 +331,22 @@ class FeatureEngineer:
             if config.get('technical_indicators', True):
                 crypto_df = self.create_technical_indicators(crypto_df)
             
-            if config.get('volume_features', False):
+            if config.get('volume_features', True):
                 crypto_df = self.create_volume_features(crypto_df)
             
             if config.get('volatility_features', True):
                 crypto_df = self.create_volatility_features(crypto_df)
             
-            if config.get('statistical_features', False):
+            if config.get('statistical_features', True):
                 crypto_df = self.create_statistical_features(crypto_df)
             
-            if config.get('market_features', False):
+            if config.get('market_features', True):
                 crypto_df = self.create_market_features(crypto_df)
             
-            if config.get('lag_features', False):
+            if config.get('lag_features', True):
                 crypto_df = self.create_lag_features(crypto_df)
             
             crypto_dfs.append(crypto_df)
-        
         
         # Combine all crypto dataframes
         df = pd.concat(crypto_dfs, ignore_index=True)

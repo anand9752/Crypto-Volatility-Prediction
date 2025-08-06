@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: crypto-volatility-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+    healthCheckPath: /health
+    plan: free

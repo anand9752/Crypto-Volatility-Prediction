@@ -10,8 +10,11 @@ class Settings:
     API_VERSION: str = "1.0.0"
     API_DESCRIPTION: str = "ML-powered API for predicting cryptocurrency market volatility"
     
+    # Environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+    
     # Database Configuration
-    DATABASE_URL: Optional[str] = os.getenv("mysql+pymysql://root:@n@nD9752@127.0.0.1:3306/CryptoValidity")
+    DATABASE_URL: Optional[str] = os.getenv("DATABASE_URL", "sqlite:///data/crypto_volatility.db")
     
     # Data Configuration
     DATA_PATH: str = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data")

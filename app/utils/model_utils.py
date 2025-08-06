@@ -42,12 +42,6 @@ class ModelManager:
             if os.path.exists(self.settings.DATASET_FILE):
                 self.data = self.data_preprocessor.load_data(self.settings.DATASET_FILE)
                 
-                # 🚀 OPTIMIZATION: Use only top 5 cryptocurrencies for faster processing
-                top_cryptos = ['Bitcoin', 'Ethereum', 'Litecoin', 'XRP', 'Cardano']
-                print(f"🎯 Using top {len(top_cryptos)} cryptocurrencies for faster processing...")
-                self.data = self.data[self.data['crypto_name'].isin(top_cryptos)]
-                print(f"✅ Filtered dataset: {len(self.data)} rows")
-                
                 # Store raw data in database
                 self.db_manager.insert_crypto_data(self.data)
                 
@@ -67,10 +61,6 @@ class ModelManager:
                 
         except Exception as e:
             print(f"❌ Error loading data: {e}")
-    
-    def get_processed_data(self) -> Optional[pd.DataFrame]:
-        """Get the processed data"""
-        return self.processed_data
     
     def train_model(self, retrain: bool = False) -> Dict[str, Any]:
         """Train the volatility prediction model"""
